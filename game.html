@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kyrgyz History Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0e6d2;
+            color: #333;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #004d40;
+        }
+        .question {
+            margin: 20px 0;
+            font-size: 24px;
+        }
+        .options {
+            margin: 10px 0;
+        }
+        .options button {
+            background-color: #004d40;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .options button:hover {
+            background-color: #00796b;
+        }
+        #feedback {
+            font-size: 18px;
+            color: #00796b;
+            margin: 20px;
+        }
+        #progress {
+            margin: 20px 0;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <img src="images.jpeg" alt="Traditional Kyrgyz Culture">
+    <h1>Kyrgyz History Quiz</h1>
+    <div id="progress"></div>
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div id="feedback"></div>
+
+    <script>
+       const questions = [
+    {
+        question: "Who is considered the national hero of Kyrgyzstan known for his epic poem?",
+        options: ["Chingiz Aitmatov", "Manas", "Toktogul Satylganov", "Kasym Tynystanov"],
+        answer: "Manas"
+    },
+    {
+        question: "What was the traditional dwelling of the Kyrgyz people?",
+        options: ["Yurt", "Izba", "Ger", "Tipi"],
+        answer: "Yurt"
+    },
+    {
+        question: "Which empire included Kyrgyzstan in the 19th century?",
+        options: ["Mongol Empire", "Russian Empire", "Ottoman Empire", "British Empire"],
+        answer: "Russian Empire"
+    },
+    {
+        question: "What is the traditional Kyrgyz sport similar to polo?",
+        options: ["Buzkashi", "Ulak Tartysh", "Shagai", "Kok Boru"],
+        answer: "Kok Boru"
+    },
+    {
+        question: "What major route passed through Kyrgyzstan historically?",
+        options: ["Silk Road", "Appalachian Trail", "Trans-Siberian Railway", "Route 66"],
+        answer: "Silk Road"
+    },
+    {
+        question: "In which year did Kyrgyzstan gain independence from the Soviet Union?",
+        options: ["1991", "1985", "1945", "1964"],
+        answer: "1991"
+    },
+    {
+        question: "What is a traditional Kyrgyz hat called?",
+        options: ["Ushanka", "Kalpak", "Fez", "Beret"],
+        answer: "Kalpak"
+    },
+    {
+        question: "What is the traditional Kyrgyz drink made from fermented mare's milk?",
+        options: ["Kumis", "Vodka", "Chai", "Sake"],
+        answer: "Kumis"
+    },
+    {
+        question: "Which of the following is a traditional Kyrgyz music instrument?",
+        options: ["Dombra", "Komuz", "Balalaika", "Harp"],
+        answer: "Komuz"
+    },
+    {
+        question: "What is a traditional form of Kyrgyz art that involves felt?",
+        options: ["Weaving", "Carpentry", "Shyrdak", "Pottery"],
+        answer: "Shyrdak"
+    },
+    {
+        question: "What animal is especially revered in Kyrgyz culture?",
+        options: ["Horse", "Camel", "Eagle", "Bear"],
+        answer: "Horse"
+    },
+    {
+        question: "Who is a famous Kyrgyz writer known for his work 'The Day Lasts More Than a Hundred Years'?",
+        options: ["Chingiz Aitmatov", "Tolstoy", "Pushkin", "Shakespeare"],
+        answer: "Chingiz Aitmatov"
+    },
+    {
+        question: "What is the name of the high-altitude lake in Kyrgyzstan known for its beauty?",
+        options: ["Lake Baikal", "Issyk-Kul", "Lake Superior", "Lake Tahoe"],
+        answer: "Issyk-Kul"
+    },
+    {
+        question: "Which of these is a traditional Kyrgyz musical form?",
+        options: ["Opera", "Jazz", "Akyn", "Rock"],
+        answer: "Akyn"
+    },
+    {
+        question: "What was the primary economic activity of traditional Kyrgyz societies?",
+        options: ["Agriculture", "Nomadic Herding", "Industrial Manufacturing", "Trade"],
+        answer: "Nomadic Herding"
+    },
+    {
+        question: "In which region is Kyrgyzstan located?",
+        options: ["Southeast Asia", "Central Asia", "Eastern Europe", "Middle East"],
+        answer: "Central Asia"
+    },
+    {
+        question: "What major event in Kyrgyz history occurred in 2010?",
+        options: ["Independence", "Tulip Revolution", "Change of capital", "National revolution"],
+        answer: "National revolution"
+    },
+    {
+        question: "What is the modern-day currency of Kyrgyzstan?",
+        options: ["Ruble", "Tenge", "Som", "Dollar"],
+        answer: "Som"
+    },
+    {
+        question: "Who was the first President of Kyrgyzstan?",
+        options: ["Askar Akayev", "Almazbek Atambayev", "Sooronbay Jeenbekov", "Roza Otunbayeva"],
+        answer: "Askar Akayev"
+    },
+    {
+        question: "What is a common element in Kyrgyz cuisine?",
+        options: ["Rice", "Noodles", "Mutton", "Seafood"],
+        answer: "Mutton"
+    }
+];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        
+        function showQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                showResults();
+                return;
+            }
+            const q = questions[currentQuestionIndex];
+            const questionContainer = document.getElementById('question');
+            questionContainer.innerHTML = q.question;
+
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            q.options.forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.onclick = () => checkAnswer(option);
+                optionsContainer.appendChild(button);
+            });
+
+            updateProgress();
+        }
+
+        function checkAnswer(selected) {
+            const correct = questions[currentQuestionIndex].answer === selected;
+            const feedback = document.getElementById('feedback');
+            if (correct) {
+                score++;
+                feedback.textContent = "Correct! Well done.";
+            } else {
+                feedback.textContent = `Wrong answer. The correct answer was: ${questions[currentQuestionIndex].answer}`;
+            }
+            currentQuestionIndex++;
+            setTimeout(showQuestion, 2000);  // Wait 2 seconds before showing the next question
+        }
+
+        function updateProgress() {
+            const progress = document.getElementById('progress');
+            progress.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+        }
+
+        function showResults() {
+            document.getElementById('question').textContent = `Quiz completed!`;
+            document.getElementById('options').innerHTML = '';
+            document.getElementById('feedback').textContent = `Your score is ${score} out of ${questions.length}.`;
+        }
+
+        showQuestion();
+    </script>
+</body>
+</html>
